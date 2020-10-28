@@ -289,6 +289,11 @@ pgpool_create_pghba() {
     local sr_check_auth_line=""
     info "Generating pg_hba.conf file..."
 
+    if ! is_file_writable "$PGPOOL_PGHBA_FILE"; then
+        info "Injected pg_hba.conf files found. Skipping to create default config file..."
+        return
+    fi
+
     is_boolean_yes "$PGPOOL_ENABLE_LDAP" && authentication="pam pamservice=pgpool"
     if is_boolean_yes "$PGPOOL_ENABLE_POOL_PASSWD"; then
         postgres_auth_line="host     all             ${PGPOOL_POSTGRES_USERNAME}       all         md5"
